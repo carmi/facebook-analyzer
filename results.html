@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd"> 
+ 
+<html lang="en"> 
+  <head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+    <link href='http://fonts.googleapis.com/css?family=Artifika&v1' rel='stylesheet' type='text/css'>   <title>Facebook Profile Analysis</title> 
+ 
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript"></script>
+    <script src="analysis/js/highcharts.js" type="text/javascript"></script>
+    <script type="text/javascript" src="analysis/js/themes/grid.js"></script>
+    <script type="text/javascript" src="analysis/result_data.js"></script>
+    <script type="text/javascript" src="analysis/result_graphs.js"></script>
+
+    <!-- Framework CSS --> 
+    <link rel="stylesheet" href="analysis/css/screen.css" type="text/css" media="screen, projection"> 
+    <link rel="stylesheet" href="analysis/css/print.css" type="text/css" media="print"> 
+    <!--[if lt IE 8]><link rel="stylesheet" href="analysis/css/ie.css" type="text/css" media="screen, projection"><![endif]--> 
+    <style type="text/css" media="screen"> 
+      body { font-family: 'Artifika', arial, serif; }
+    </style> 
+  </head> 
+  <body> 
+ 
+    <div class="container"> 
+      <h1>Facebook Profile Analysis</h1> 
+      <hr>
+ 
+      <p>Welcome to the Facebook Profile Analyser. A little script by <a
+        href="http://ecarmi.org/">Evan Carmi</a> that parses a downloaded
+      Facebook profile for interesting statistics. If you've run the python
+      script, below should appear the results.If you've run the python script,
+      below should appear the results. Below are the results. Enjoy!</p> 
+ 
+      <div id="posts_by_day" style="width: 100%; height: 400px"></div>
+      <hr>
+      <div id="posts_month" style="width: 100%; height: 400px"></div>
+      <hr>
+      <div id="word_pie" style="width: 48%; height: 400px; float: left"></div>
+      <div id="bad_word_pie" style="width: 48%; height: 400px; float: right">
+      </div>
+      <hr>
+      <hr>
+    </div> 
+  </body> 
+</html> 
