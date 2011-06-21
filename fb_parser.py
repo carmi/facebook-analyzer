@@ -64,6 +64,7 @@ class Profile:
                     'posts_by_month' : defaultdict(int),
                     'posts_by_year' : defaultdict(int)}
     self.word_counter = Counter()
+    self.profile_counter = Counter()
 
   def add_post(self, post):
     self.posts.append(post)
@@ -91,6 +92,7 @@ class Profile:
     js_month = self.build_js('posts_month_data', self.results['posts_by_month'].items())
     js_year = self.build_js('posts_year_data', self.results['posts_by_year'].items())
     js_words = self.build_js('word_pie', [(("'%s'" % word[0]), word[1]) for word in self.word_counter.most_common(50)])
+    js_profiles = self.build_js('top_profiles_data', [(("'%s'" % word[0]), word[1]) for word in self.profile_counter.most_common(50)])
 
     # Some swear words found online - seem awfully British :).
     profanity_set = set(( 'arse', 'ass', 'arsehole', 'asshole', 'balls', 'bastard', 'bitch', 'bloody', 'bollocks', 'bugger', 'christ', 'crap', 'cunt', 'damn', 'goddamn', 'godamn', 'dickhead', 'fuck', 'god', 'jesus', 'hell', 'motherfucker', 'piss', 'pissed', 'prick', 'shag', 'shit', 'slag', 'sucks', 'twat', 'wanker', 'whore'))
@@ -100,7 +102,8 @@ class Profile:
                                   for word in profanity_set if self.word_counter[word] > 0])
 
     f = open(self.js_data_file, 'w')
-    f.write('\n'.join([js_day, js_month, js_year, js_words, js_words_bad]))
+    f.write('\n'.join([js_day, js_month, js_year, js_words, js_words_bad,
+                       js_profiles]))
 
   def add_post_by_date(self, date):
     self.results['posts_by_date'][date] += 1
@@ -125,6 +128,7 @@ class Profile:
     for entry in entries:
       # Parse and find entry information.
       profile = entry.findChild(name='span', attrs={'class' : 'profile'}).extract().text
+
       time_text = entry.findChild(name='span', attrs={'class' : 'time'}).extract().text
       time_object = datetime.strptime(time_text, "%B %d, %Y at %H:%M %p")
 
@@ -155,6 +159,9 @@ class Profile:
       words = re.findall('\w+', text.lower())
       self.word_counter.update(words)
       self.results['word_count'] += len(words)
+
+      # Update profile counter with wall post.
+      self.profile_counter.update([profile])
 
 def main():
   # Facebook's html file with wall posts

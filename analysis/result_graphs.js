@@ -2,6 +2,7 @@ var chart1;
 var chart2;
 var chart3;
 var chart4;
+var chart5;
 Highcharts.setOptions({
   chart: {
      style: {
@@ -206,6 +207,32 @@ $(document).ready(function() {
          type: 'pie',
          name: 'Browser share',
          data: bad_word_pie
+      }]
+   });
+
+   chart5 = new Highcharts.Chart({
+      chart: {
+         renderTo: 'profile_pie',
+      },
+      title: {
+         text: '<abbr title="Note: Your name will most likely be first since wall posts include status updates.">Top profile appearences on wall.</abbr>'
+      },
+      tooltip: {
+         formatter: function() {
+            return '<b>'+ this.point.name +'</b>: '+ this.y;
+         }
+      },
+      xAxis: {
+      },
+      yAxis: {
+        title : {
+          text: 'Occurences of profile name on wall.'
+        }
+      },
+       series: [{
+         type: 'pie',
+         name: 'Browser share',
+         data: top_profile_pie
       }]
    });
 });
