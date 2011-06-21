@@ -9,8 +9,8 @@ A tool to parse and analyse a downloaded Facebook profile.
 Instructions: execute `python fb_parser.py` in the same directory that Facebook's
 index.html is located.
 """
-
 import os, sys, re
+
 from datetime import datetime
 from collections import Counter, defaultdict
 
@@ -82,7 +82,7 @@ class Profile:
     for k, v in content_dict:
       js += "[%s, %s], " % (k, v)
     js += '];'
-    return js
+    return js.encode('utf-8')
 
   def save_results(self):
     import json
@@ -92,7 +92,7 @@ class Profile:
     js_month = self.build_js('posts_month_data', self.results['posts_by_month'].items())
     js_year = self.build_js('posts_year_data', self.results['posts_by_year'].items())
     js_words = self.build_js('word_pie', [(("'%s'" % word[0]), word[1]) for word in self.word_counter.most_common(50)])
-    js_profiles = self.build_js('top_profiles_data', [(("'%s'" % word[0]), word[1]) for word in self.profile_counter.most_common(50)])
+    js_profiles = self.build_js('top_profile_pie', [(('"%s"' % word[0]), word[1]) for word in self.profile_counter.most_common(50)])
 
     # Some swear words found online - seem awfully British :).
     profanity_set = set(( 'arse', 'ass', 'arsehole', 'asshole', 'balls', 'bastard', 'bitch', 'bloody', 'bollocks', 'bugger', 'christ', 'crap', 'cunt', 'damn', 'goddamn', 'godamn', 'dickhead', 'fuck', 'god', 'jesus', 'hell', 'motherfucker', 'piss', 'pissed', 'prick', 'shag', 'shit', 'slag', 'sucks', 'twat', 'wanker', 'whore'))
@@ -102,8 +102,7 @@ class Profile:
                                   for word in profanity_set if self.word_counter[word] > 0])
 
     f = open(self.js_data_file, 'w')
-    f.write('\n'.join([js_day, js_month, js_year, js_words, js_words_bad,
-                       js_profiles]))
+    f.write('\n'.join([js_day, js_month, js_year, js_words, js_words_bad, js_profiles]))
 
   def add_post_by_date(self, date):
     self.results['posts_by_date'][date] += 1
@@ -127,7 +126,10 @@ class Profile:
 
     for entry in entries:
       # Parse and find entry information.
-      profile = entry.findChild(name='span', attrs={'class' : 'profile'}).extract().text
+      profile = entry.findChild(name='span', attrs={'class' : 'profile'}).text
+
+      # Update profile counter with wall post.
+      self.profile_counter.update([profile])
 
       time_text = entry.findChild(name='span', attrs={'class' : 'time'}).extract().text
       time_object = datetime.strptime(time_text, "%B %d, %Y at %H:%M %p")
@@ -140,6 +142,9 @@ class Profile:
 
       comment_div = entry.findChild(name='div', attrs={'class' : 'comments'})
       if comment_div:
+        comment_profiles = comment_div.findAll(name='span', attrs={'class' : 'profile'})
+        if comment_profiles:
+          self.profile_counter.update([profile.text for profile in comment_profiles])
         comment = comment_div.extract().text
       else:
         comment = 'No comments'
@@ -159,9 +164,6 @@ class Profile:
       words = re.findall('\w+', text.lower())
       self.word_counter.update(words)
       self.results['word_count'] += len(words)
-
-      # Update profile counter with wall post.
-      self.profile_counter.update([profile])
 
 def main():
   # Facebook's html file with wall posts
