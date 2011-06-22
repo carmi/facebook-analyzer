@@ -12,6 +12,7 @@ index.html is located.
 import os, sys, re
 
 from datetime import datetime
+import json
 from collections import Counter, defaultdict
 
 from BeautifulSoup import BeautifulSoup
@@ -37,8 +38,7 @@ class Post:
     where post was created.
     Note: Months are (0 - 11) in JS.
     """
-    return "Date.parse('%s-%s')" % (self.time.strftime('%Y'),
-        (int(self.time.strftime("%m")) - 1))
+    return "%s-%s" % (self.time.strftime('%Y'), (int(self.time.strftime("%m")) - 1))
 
 
   def year_js(self):
@@ -46,13 +46,13 @@ class Post:
     Return a string for use in building a javascript Date object for year
     where post was created.
     """
-    return "Date.parse('%s')" % self.time.strftime('%Y')
+    return "%s" % self.time.strftime('%Y')
 
   def date_js(self):
     """
     Return a string for use in building javascript Date objects.
     """
-    return "Date.parse('%s')" % self.date()
+    return "%s" % self.date()
 
 class Profile:
   def __init__(self, wall_file, js_data_file, posts=[]):
@@ -63,6 +63,7 @@ class Profile:
                     'posts_by_date' : defaultdict(int),
                     'posts_by_month' : defaultdict(int),
                     'posts_by_year' : defaultdict(int)}
+    self.js_output = defaultdict(str)
     self.word_counter = Counter()
     self.profile_counter = Counter()
 
@@ -77,32 +78,38 @@ class Profile:
   def analyze_wall(self):
     self.parse_wall(self.read_file(self.wall_file))
 
-  def build_js(self, name, content_dict):
-    js = '%s = [' % name
-    for k, v in content_dict:
-      js += "[%s, %s], " % (k, v)
-    js += '];'
-    return js.encode('utf-8')
+  def add_js(self, name, content):
+    self.js_output[name] = content
+
+  def get_json(self):
+    # Encode in utf-8 to handle names with accents.
+    # FIXME: strip single quotes - causing json greif.
+    return json.dumps(self.js_output).encode('utf-8').replace("'","")
+
+  def write_data(self):
+    f = open(self.js_data_file, 'w')
+    # Contstruct a javascript file that can be easily linked to.
+    output = "var result_data = jQuery.parseJSON('"
+    output += self.get_json()
+    output += "')"
+    f.write(output)
 
   def save_results(self):
-    import json
 
     # build_data_file
-    js_day = self.build_js('posts_data', self.results['posts_by_date'].items())
-    js_month = self.build_js('posts_month_data', self.results['posts_by_month'].items())
-    js_year = self.build_js('posts_year_data', self.results['posts_by_year'].items())
-    js_words = self.build_js('word_pie', [(("'%s'" % word[0]), word[1]) for word in self.word_counter.most_common(50)])
-    js_profiles = self.build_js('top_profile_pie', [(('"%s"' % word[0]), word[1]) for word in self.profile_counter.most_common(50)])
+    js_day = self.add_js('posts_data', self.results['posts_by_date'].items())
+    js_month = self.add_js('posts_month_data', self.results['posts_by_month'].items())
+    js_year = self.add_js('posts_year_data', self.results['posts_by_year'].items())
+    js_words = self.add_js('word_pie', [(word[0], word[1]) for word in self.word_counter.most_common(50)])
+    js_profiles = self.add_js('top_profile_pie', [(word[0], word[1]) for word in self.profile_counter.most_common(50)])
 
     # Some swear words found online - seem awfully British :).
     profanity_set = set(( 'arse', 'ass', 'arsehole', 'asshole', 'balls', 'bastard', 'bitch', 'bloody', 'bollocks', 'bugger', 'christ', 'crap', 'cunt', 'damn', 'goddamn', 'godamn', 'dickhead', 'fuck', 'god', 'jesus', 'hell', 'motherfucker', 'piss', 'pissed', 'prick', 'shag', 'shit', 'slag', 'sucks', 'twat', 'wanker', 'whore'))
 
 
-    js_words_bad = self.build_js('bad_word_pie', [(("'%s'" % word), self.word_counter[word])
-                                  for word in profanity_set if self.word_counter[word] > 0])
+    js_words_bad = self.add_js('bad_word_pie', [(word, self.word_counter[word]) for word in profanity_set if self.word_counter[word] > 0])
 
-    f = open(self.js_data_file, 'w')
-    f.write('\n'.join([js_day, js_month, js_year, js_words, js_words_bad, js_profiles]))
+    self.write_data()
 
   def add_post_by_date(self, date):
     self.results['posts_by_date'][date] += 1

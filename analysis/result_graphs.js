@@ -1,3 +1,15 @@
+function daterize(data){
+  new_data = [];
+  $.each(data, function(date, value) {
+    new_data.push([Date.parse(value[0]), value[1]]);
+  });
+
+  return new_data;
+};
+result_data.posts_year_data = daterize(result_data.posts_year_data)
+result_data.posts_month_data = daterize(result_data.posts_month_data)
+result_data.posts_data = daterize(result_data.posts_data)
+
 var chart1;
 var chart2;
 var chart3;
@@ -73,7 +85,7 @@ $(document).ready(function() {
       series: [{
          type: 'area',
          name: 'Posts per Day',
-         data: posts_data
+         data: result_data.posts_data
 
       }]
    });
@@ -148,11 +160,11 @@ $(document).ready(function() {
          type: 'column',
          name: 'Posts by year',
          yAxis: 1,
-         data: posts_year_data
+         data: result_data.posts_year_data
       }, {
         type: 'spline',
          name: 'Posts by month',
-        data: posts_month_data}]
+        data: result_data.posts_month_data}]
    });
 
 
@@ -179,7 +191,7 @@ $(document).ready(function() {
        series: [{
          type: 'pie',
          name: 'Browser share',
-         data: word_pie
+         data: result_data.word_pie
       }]
    });
 
@@ -206,7 +218,7 @@ $(document).ready(function() {
        series: [{
          type: 'pie',
          name: 'Browser share',
-         data: bad_word_pie
+         data: result_data.bad_word_pie
       }]
    });
 
@@ -232,7 +244,7 @@ $(document).ready(function() {
        series: [{
          type: 'pie',
          name: 'Browser share',
-         data: top_profile_pie
+         data: result_data.top_profile_pie
       }]
    });
 });
