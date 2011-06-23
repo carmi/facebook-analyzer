@@ -27,26 +27,29 @@
       <h1>Facebook Profile Analysis</h1> 
       <hr>
  
-      <p>Welcome to the Facebook Profile Analyser. A little script by <a
-        href="http://ecarmi.org/">Evan Carmi</a> that parses a downloaded
+      <p>Welcome to the Facebook Profile Analyser.</p>
+      <p>A little script by <a href="http://ecarmi.org/">Evan Carmi</a> that parses a downloaded
       Facebook profile for interesting statistics. If you've run the python
-      script, below should appear the results.If you've run the python script,
-      below should appear the results. Below are the results. Enjoy!</p> 
+      script, below should appear your very own results.</p>
+      <p>Enjoy!</p> 
  
-      <div id="posts_by_day" style="width: 100%; height: 400px">
-        <div class="error">
-        <h1>Oops. You've got problems...</h1>
-        <p>It seems as if the data graphs are not loading. Are you sure that you have followed the instructions and ran <code>python fb_parser.py</code>?</p>
-        </div>
+      <div id="posts_by_day" class="notice" style="width: 100%; height: 400px">
+        <h2>Oops. You've got problems...</h2>
+        <p>You shouldn't be seeing this! It seems as if the data graphs are not loading.</p>
+        <h3>Instructions</h3>
+        <ul>
+          <li>Download your <a href="http://www.facebook.com/help/?page=18830">facebook information</a></li>
+          <li>Download and unpack the Facebook Analyzer package in the same directory as your downloaded facebook information. The <code>index.html</code> file from the downloaded facebbok information files should be in the same directory as the Facebook Analyzer package's <code>fb_parser.py</code> file.</li>
+          <li>Run <code>python fb_parser.py</code> from a shell in the above directory. Don't know what this means? Ask your child. Don't have children: ask your neighbor's children.</li>
+        </ul>
       </div>
       <hr>
-      <div id="posts_month" style="width: 100%; height: 400px"></div>
+      <div id="posts_month" class="error" style="width: 100%; height: 400px">Posts per month graph failed to load.</div>
       <hr>
-      <div id="word_pie" style="width: 48%; height: 400px; float: left"></div>
-      <div id="bad_word_pie" style="width: 48%; height: 400px; float: right">
-      </div>
+      <div id="word_pie" class="error" style="width: 47%; height: 400px; float: left">Word pie graph failed to load.</div>
+      <div id="bad_word_pie" class="error" style="width: 47%; height: 400px; float: right">Bad word pie graph failed to load.</div>
       <hr>
-      <div id="profile_pie" style="width: 100%; height: 400px">
+      <div id="profile_pie" class="error" style="width: 100%; height: 400px">Profile pie graph failed to load.</div>
       <hr>
     </div> 
   </body> 

@@ -18,7 +18,7 @@ var chart5;
 Highcharts.setOptions({
   chart: {
      style: {
-       fontFamily : '"Artifika", arial, serif'
+       fontFamily : '"Permanent Marker", arial, serif'
      }
   }
 });
@@ -174,7 +174,7 @@ $(document).ready(function() {
          defaultSeriesType: 'column',
       },
       title: {
-         text: 'Most common words in all wall posts'
+         text: 'Most common words in all wall posts and comments'
       },
       tooltip: {
          formatter: function() {
@@ -201,7 +201,7 @@ $(document).ready(function() {
          defaultSeriesType: 'column'
       },
       title: {
-         text: 'Most swear words in all wall posts'
+         text: 'Most swear words in all wall posts and comments'
       },
       tooltip: {
          formatter: function() {
@@ -227,7 +227,7 @@ $(document).ready(function() {
          renderTo: 'profile_pie',
       },
       title: {
-         text: '<abbr title="Note: Your name will most likely be first since wall posts include status updates.">Top profile appearences on wall.</abbr>'
+         text: 'Most common profiles on wall (includes comments).'
       },
       tooltip: {
          formatter: function() {
@@ -243,7 +243,6 @@ $(document).ready(function() {
       },
        series: [{
          type: 'pie',
-         name: 'Browser share',
          data: result_data.top_profile_pie
       }]
    });

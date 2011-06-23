@@ -104,7 +104,11 @@ class Profile:
     js_profiles = self.add_js('top_profile_pie', [(word[0], word[1]) for word in self.profile_counter.most_common(50)])
 
     # Some swear words found online - seem awfully British :).
-    profanity_set = set(( 'arse', 'ass', 'arsehole', 'asshole', 'balls', 'bastard', 'bitch', 'bloody', 'bollocks', 'bugger', 'christ', 'crap', 'cunt', 'damn', 'goddamn', 'godamn', 'dickhead', 'fuck', 'god', 'jesus', 'hell', 'motherfucker', 'piss', 'pissed', 'prick', 'shag', 'shit', 'slag', 'sucks', 'twat', 'wanker', 'whore'))
+    profanity_set = set(( 'arse', 'ass', 'arsehole', 'asshole', 'balls',
+      'bastard', 'bitch', 'bloody', 'bollocks', 'bugger', 'christ', 'crap',
+      'cunt', 'damn', 'goddamn', 'godamn', 'dickhead', 'fuck', 'fucking',
+      'fucker', 'god', 'jesus', 'hell', 'motherfucker', 'piss', 'pissed',
+      'prick', 'shag', 'shit', 'slag', 'sucks', 'twat', 'wanker', 'whore'))
 
 
     js_words_bad = self.add_js('bad_word_pie', [(word, self.word_counter[word]) for word in profanity_set if self.word_counter[word] > 0])
@@ -147,19 +151,25 @@ class Profile:
       else:
         privacy = 'Default privacy'
 
+      #TODO: create comment class
+      comment_words = False
       comment_div = entry.findChild(name='div', attrs={'class' : 'comments'})
       if comment_div:
         comment_profiles = comment_div.findAll(name='span', attrs={'class' : 'profile'})
         if comment_profiles:
-          self.profile_counter.update([profile.text for profile in comment_profiles])
-        comment = comment_div.extract().text
-      else:
-        comment = 'No comments'
+          self.profile_counter.update([profile.extract().text for profile in comment_profiles])
+
+        comment_text = comment_div.findAll(name='div', attrs={'class' : 'comment' })
+        if comment_text:
+          for comment in comment_text:
+            comment_time = comment.findNext(name='span', attrs={'class' : 'time'}).extract().text
+            comment_words = re.findall('\w+', comment.extract().text.lower())
+            self.word_counter.update(comment_words)
 
       text = entry.text
 
       post = Post(profile=profile, time=time_object, privacy=privacy,
-                  comment=comment, text=text, count=len(self.posts))
+                  comment=comment_words, text=text, count=len(self.posts))
 
       self.add_post_by_date(post.date_js())
       self.add_post_by_month(post.month_js())
