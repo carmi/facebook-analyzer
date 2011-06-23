@@ -1,4 +1,4 @@
-The Facebook Analyzer is a tool to parse and analyze a downloaded Facebook account's information for interesting statistics.
+### The Facebook Analyzer is a tool to parse and analyze a downloaded Facebook account's information for interesting statistics.
 
 So far, we have statistics for the following:
 
