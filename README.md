@@ -1,6 +1,7 @@
 The Facebook Analyzer is a tool to parse and analyze a downloaded Facebook account's information for interesting statistics.
 
 So far, we have statistics for the following:
+
 * Wall posts by day, month and year.
 * Most common words (including swear words).
 * Most common profiles posting on wall.
