@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/python
 
 # Author: Evan Carmi : ecarmi.org
 # Version: 0.1 - 20110618
@@ -13,7 +13,12 @@ import os, sys, re
 
 from datetime import datetime
 import json
-from collections import Counter, defaultdict
+
+try:
+  from collections import Counter, defaultdict
+except Exception:
+  print "Failed to import collections. You need python 2.7 or newer to run this script"
+  exit(1)
 
 from BeautifulSoup import BeautifulSoup
 
@@ -143,7 +148,7 @@ class Profile:
       self.profile_counter.update([profile])
 
       time_text = entry.findChild(name='span', attrs={'class' : 'time'}).extract().text
-      time_object = datetime.strptime(time_text, "%B %d, %Y at %H:%M %p")
+      time_object = datetime.strptime(time_text, "%B %d, %Y at %I:%M %p")
 
       privacy_img = entry.findChild(name='img', attrs={'class' : 'privacy'})
       if privacy_img:
