@@ -91,6 +91,14 @@ class Profile:
     # FIXME: strip single quotes - causing json greif.
     return json.dumps(self.js_output).encode('utf-8').replace("'","")
 
+  def parse_time(self, time_str):
+    # Handle both 24h and 12h time strings.
+    try:
+      #June 15, 2011 at 10:31 am
+      return datetime.strptime(time_str, "%B %d, %Y at %I:%M %p")
+    except ValueError:
+      return datetime.strptime(time_str, "%B %d, %Y at %H:%M")
+
   def write_data(self):
     f = open(self.js_data_file, 'w')
     # Contstruct a javascript file that can be easily linked to.
@@ -148,7 +156,8 @@ class Profile:
       self.profile_counter.update([profile])
 
       time_text = entry.findChild(name='span', attrs={'class' : 'time'}).extract().text
-      time_object = datetime.strptime(time_text, "%B %d, %Y at %I:%M %p")
+
+      time_object = self.parse_time(time_text)
 
       privacy_img = entry.findChild(name='img', attrs={'class' : 'privacy'})
       if privacy_img:
